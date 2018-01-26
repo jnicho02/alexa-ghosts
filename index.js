@@ -85,7 +85,7 @@ const handlers = {
     // handle any intent in interaction model with no handler code
     console.log(`Unhandled`);
     var speechOutput = 'This is the Ghost Story. ';
-    var reprompt = 'I did not understand.';
+    var reprompt = "I did not understand. <audio src='https://s3-eu-west-1.amazonaws.com/alexa-ghosts/aaagh1_enc.mp3'/>";
     speechOutput = speechOutput + reprompt;
     var cardTitle = 'Help.';
     var cardContent = speechOutput;
