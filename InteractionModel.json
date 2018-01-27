@@ -20,9 +20,9 @@
         ]
       },
       {
-        "name": "SeeIntent",
+        "name": "AnybodyThereIntent",
         "samples": [
-          "I see dead people"
+          "is anybody there"
         ],
         "slots": []
       }

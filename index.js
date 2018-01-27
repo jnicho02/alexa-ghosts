@@ -12,22 +12,43 @@ module.exports.handler = (event, context, callback) => {
 
 const handlers = {
   'LaunchRequest': function() {
-    console.log(`LaunchRequest`);
-    var speechOutput = `This is the Ghost Story. ${audioClip("cant-hear")}`;
-    var reprompt = `Say hello, to hear me speak.`;
+    var speechOutput = `Welcome to ghost hunt`;
+    var reprompt = ``;
     speechOutput = `${speechOutput} ${reprompt}`;
     var cardTitle = `Launch`;
     var cardContent = speechOutput;
     var imageObj = undefined;
-    console.log(`HelpIntent: ${JSON.stringify({
-      "speak": speechOutput,
-      "listen": reprompt,
-      "card" : {
-        "title": cardTitle,
-        "content": cardContent,
-        "imageObj": imageObj
-      }
-    })}`);
+    log('LaunchRequest', speechOutput, reprompt, cardTitle, cardContent, imageObj);
+    this.response.speak(speechOutput)
+      .listen(reprompt)
+      .cardRenderer(cardTitle, cardContent, imageObj);
+    this.emit(':responseReady');
+  },
+  'AnybodyThereIntent': function() {
+    var speechOutput = ``;
+    switch (random(5)) {
+      case 1:
+        speechOutput = `The spirits are there. Try again`;
+        break;
+      case 2:
+        speechOutput = `I am not sure. Try again`;
+        break;
+      case 3:
+        speechOutput = `${mp3("creepy")}`;
+        break;
+      case 4:
+        speechOutput = `${mp3("i see dead people")}`;
+        break;
+      case 5:
+        speechOutput = `${mp3("creepy")}`;
+        break;
+    }
+    var reprompt = ``;
+    speechOutput = `${speechOutput} ${reprompt}`;
+    var cardTitle = `Is anybody there?`;
+    var cardContent = speechOutput;
+    var imageObj = undefined;
+    log('AnybodyThereIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
       .cardRenderer(cardTitle, cardContent, imageObj);
@@ -40,15 +61,7 @@ const handlers = {
     var cardTitle = `Help`;
     var cardContent = speechOutput;
     var imageObj = undefined;
-    console.log(`HelpIntent: ${JSON.stringify({
-      "speak": speechOutput,
-      "listen": reprompt,
-      "card" : {
-        "title": cardTitle,
-        "content": cardContent,
-        "imageObj": imageObj
-      }
-    })}`);
+    log('HelpIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
       .cardRenderer(cardTitle, cardContent, imageObj);
@@ -62,40 +75,24 @@ const handlers = {
   },
   'CompletelyExit': function() {
     var speechOutput = `Goodbye.`;
+    var reprompt = null;
     var cardTitle = `Exit`;
     var cardContent = speechOutput;
     var imageObj = undefined;
-    console.log(`CompletelyExit: ${JSON.stringify({
-      "speak": speechOutput,
-      "listen": null,
-      "card" : {
-        "title": cardTitle,
-        "content": cardContent,
-        "imageObj": imageObj
-      }
-    })}`);
+    log('CompletelyExit', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .cardRenderer(cardTitle, cardContent, imageObj);
     this.emit(':responseReady');
   },
   'Unhandled': function() {
     // handle any intent in interaction model with no handler code
-    console.log(`Unhandled`);
     var speechOutput = `This is the Ghost Story. `;
     var reprompt = `I did not understand.`;
     speechOutput = `${speechOutput} ${reprompt}`;
     var cardTitle = `Unhandled`;
     var cardContent = speechOutput;
     var imageObj = undefined;
-    console.log(`HelpIntent: ${JSON.stringify({
-      "speak": speechOutput,
-      "listen": reprompt,
-      "card" : {
-        "title": cardTitle,
-        "content": cardContent,
-        "imageObj": imageObj
-      }
-    })}`);
+    log('Unhandled', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
 //      .listen(reprompt)
       .cardRenderer(cardTitle, cardContent, imageObj);
@@ -107,6 +104,26 @@ const handlers = {
   },
 };
 
-function audioClip(name) {
-  return `<audio src='https://s3-eu-west-1.amazonaws.com/alexa-ghosts/${name}.mp3'/>`;
+function log(intent, speechOutput, reprompt, cardTitle, cardContent, imageObj) {
+  console.log(`${intent}: ${JSON.stringify({
+    "speak": speechOutput,
+    "listen": reprompt,
+    "card" : {
+      "title": cardTitle,
+      "content": cardContent,
+      "imageObj": imageObj
+    }
+  })}`);
 }
+
+function mp3(name) {
+  return `<audio src='https://s3-eu-west-1.amazonaws.com/alexa-ghosts/${name.replaceAll(" ","-")}.mp3'/>`;
+}
+
+String.prototype.replaceAll = function(target, replacement) {
+  return this.split(target).join(replacement);
+};
+
+function random(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+};
