@@ -1,32 +1,70 @@
 {
   "languageModel": {
-    "intents": [
-      {
-        "name": "AMAZON.CancelIntent",
-        "samples": [
-          "cancel"
-        ]
+    "intents": [{
+        "name": "AMAZON.CancelIntent"
       },
       {
-        "name": "AMAZON.HelpIntent",
-        "samples": [
-          "help me"
-        ]
+        "name": "AMAZON.HelpIntent"
       },
       {
-        "name": "AMAZON.StopIntent",
-        "samples": [
-          "stop"
-        ]
+        "name": "AMAZON.StopIntent"
       },
       {
         "name": "AnybodyThereIntent",
         "samples": [
-          "is anybody there"
+          "is anybody there",
+          "is anybody out there",
+          "can you hear me"
+        ]
+      },
+      {
+        "name": "WhereAreYouIntent",
+        "samples": [
+          "I am near {predicate} {place_or_thing}"
         ],
-        "slots": []
+        "slots": [{
+          "name": "predicate",
+          "type": "PREDICATES"
+        },
+        {
+          "name": "place_or_thing",
+          "type": "PLACES_AND_THINGS"
+        }]
       }
     ],
+    "types": [{
+      "name": "PREDICATES",
+      "values": [{
+        "name": {
+          "value": "the",
+          "synonyms": ["a","an","in the","by the"]
+        }
+      }, {
+        "name": {
+          "value": "kitchen"
+        }
+      }]
+    },
+    {
+      "name": "PLACES_AND_THINGS",
+      "values": [{
+        "name": {
+          "value": "skiff"
+        }
+      },{
+        "name": {
+          "value": "door"
+        }
+      }, {
+        "name": {
+          "value": "kitchen"
+        }
+      }, {
+        "name": {
+          "value": "projector screen"
+        }
+      }]
+    }],
     "invocationName": "ghost hunt"
   }
 }
