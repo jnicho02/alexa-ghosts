@@ -18,6 +18,10 @@ provider:
         - "dynamodb:DeleteItem"
         - "dynamodb:CreateTable"
       Resource: "arn:aws:dynamodb:eu-west-1:*:*"
+    - Effect: "Allow"
+      Action:
+        - "s3:GetObject"
+      Resource: "arn:aws:s3:::alexa-ghosts"
 functions:
   hello:
     handler: index.handler
@@ -25,8 +29,10 @@ functions:
       - alexaSkill
 package:
   include:
+    - index.js
     - node_modules/alexa-sdk/**
     - node_modules/i18next/**
     - node_modules/i18next-sprintf-postprocessor/**
   exclude:
     - node_modules/**
+    - .*/**
