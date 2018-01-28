@@ -33,6 +33,7 @@ package:
     - node_modules/alexa-sdk/**
     - node_modules/i18next/**
     - node_modules/i18next-sprintf-postprocessor/**
+    - the-skiff.json
   exclude:
     - node_modules/**
     - .*/**

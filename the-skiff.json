@@ -1,0 +1,14 @@
+{
+  "door": {
+    "ghostliness": 0,
+    "links": "kitchen, sprint plan"
+  },
+  "kitchen": {
+    "ghostliness": 10,
+    "links": "door"
+  },
+  "sprint plan": {
+    "ghostliness": 5,
+    "links": "door"
+  }
+}
