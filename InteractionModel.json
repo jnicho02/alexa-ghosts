@@ -23,7 +23,10 @@
       {
         "name": "WhereAreYouIntent",
         "samples": [
-          "I am near {predicate} {place_or_thing}"
+          "I am near {predicate} {place_or_thing}",
+          "I am in {predicate} {place_or_thing}",
+          "{predicate} {place_or_thing}",
+          "{place_or_thing}"
         ],
         "slots": [{
           "name": "predicate",
@@ -54,9 +57,10 @@
         "name": {
           "value": "skiff"
         }
-      },{
+      }, {
         "name": {
-          "value": "door"
+          "value": "door",
+          "synonyms": ["front door","entrance"]
         }
       }, {
         "name": {
@@ -64,7 +68,19 @@
         }
       }, {
         "name": {
-          "value": "projector screen"
+          "value": "sofa"
+        }
+      }, {
+        "name": {
+          "value": "toilets"
+        }
+      }, {
+        "name": {
+          "value": "desks"
+        }
+      }, {
+        "name": {
+          "value": "wall"
         }
       }]
     }],

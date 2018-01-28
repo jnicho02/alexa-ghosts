@@ -7,4 +7,7 @@ AnybodyThereIntent
 AnybodyThereIntent
 AMAZON.YesIntent
 AMAZON.YesIntent
+AMAZON.YesIntent
+AMAZON.YesIntent
+AMAZON.YesIntent
 AMAZON.StopIntent

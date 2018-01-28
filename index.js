@@ -216,14 +216,13 @@ const findMode = Alexa.CreateStateHandler("FIND", {
       "in a square pattern",
       "in the air",
     ]);
-    console.log(`move ${direction}`);
     switch (diceRoll) {
       case 0:
         speechOutput = `I think I detected something. Move me to the left and ask again`;
         reprompt = `Move me ${direction} and say, is anybody there?`;
         break;
       case 1:
-        speechOutput = `The spirits are there. Try again`;
+        speechOutput = `The spirits are there. Give it another try.`;
         reprompt = `Move me ${direction} and say, is anybody there?`;
         break;
       case 2:
@@ -232,6 +231,7 @@ const findMode = Alexa.CreateStateHandler("FIND", {
         break;
       case 3:
         speechOutput = `${mp3("creepy")}
+          Shit!
           Did you hear that?
           Shall I try to speak with it.`;
         reprompt = `Shall I try to speak with it.`;
@@ -241,14 +241,15 @@ const findMode = Alexa.CreateStateHandler("FIND", {
       case 4:
         speechOutput = `${mp3("i see dead people")}
           Did you hear that?
-          Move me down toward the floor and try again.`;
-        reprompt = `Move me down toward the floor and try again.`;
+          Move me ${direction} and try again.`;
+        reprompt = `Move me ${direction} and try again.`;
         break;
       case 5:
         speechOutput = `${mp3("aaagh1")}
-          Shit. Did you hear that?
-          Let's try to speak with it.`;
-        reprompt = `Let's try to speak with it.`;
+          Shit.
+          Did you hear that?
+          Should I try to speak with it.`;
+        reprompt = `Should I try to speak with it.`;
         this.event.session.attributes['diceRolls'] = [];
         this.handler.state = "SPEAK";
         break;
@@ -320,35 +321,35 @@ const speakMode = Alexa.CreateStateHandler("SPEAK", {
     var speechOutput = ``;
     if (this.event.session.attributes['ghost'] === undefined) {
       speechOutput = `Oh spirit, are you willing to speak?
-        Spirit, please talk, we beseach thee.`;
-    }
-    if (this.event.session.attributes['ghost'] !== undefined
-      && !this.event.session.attributes['ghostname']) {
+        Spirit, please talk, we beseach thee.
+        Shall I ask it's name?`;
+    } else if (!this.event.session.attributes['ghostname']) {
       speechOutput = `Oh spirit, what is your name?
-        Spirit, please talk, we beseach thee.
+        Spirit, please talk, we beseech thee.
         ${mp3("my-name-is")}
+        . Well, that is slightly scary.
+        Shall I ask it the next question?
         `;
-      this.event.session.attributes['ghostname'] = 'Zuul';
-    }
-    if (this.event.session.attributes['ghost'] !== undefined
-      && !this.event.session.attributes['ghosthappy']) {
+      this.event.session.attributes['ghostname'] = true;
+    } else if (!this.event.session.attributes['ghosthappy']) {
       speechOutput = `Oh spirit, are you happy?
-        Spirit, please talk, we beseach thee.
+        Spirit, please talk, we beseech thee.
         ${mp3("are-you-happy")}
+        . Shall I ask it the next question?
         `;
       this.event.session.attributes['ghosthappy'] = true;
-    }
-    if (this.event.session.attributes['ghost'] !== undefined
-      && !this.event.session.attributes['ghostwhere']) {
-      speechOutput = `Oh spirit, are you happy?
-        Spirit, please talk, we beseach thee.
-        ${mp3("are-you-happy")}
-        `;
+    } else if (!this.event.session.attributes['ghostwhere']) {
+      speechOutput = `Oh spirit, where are you?
+        Spirit, please tell us.
+        ${mp3("where-are-you")}
+        I am getting quite scared now.
+        I think I will end this here.
+        Thank you for working with me.`;
       this.event.session.attributes['ghostwhere'] = true;
+      this.handler.state = "LOCATE";
     }
     this.event.session.attributes['ghost'] = 0;
     var reprompt = `Shall I continue.`;
-    speechOutput = `${speechOutput} ${reprompt}`;
     var cardTitle = `Oh spirit...`;
     var cardContent = speechOutput;
     var imageObj = undefined;

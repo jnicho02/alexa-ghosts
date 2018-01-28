@@ -14,9 +14,9 @@ const options = {
   speechOutput: true,
   slots: true,
   attributes: true, // true, false, or a string with the name of an attribute
-  stdout: true, // standard output  / console.log() in your code
+  stdout: false, // standard output  / console.log() in your code
   logRequestEvent: false, // show the full event JSON sent to your code
-  logRequest: true, // show the request JSON sent to your code
+  logRequest: false, // show the request JSON sent to your code
   reprompt: false,
   delay: 1.0 // seconds between requests
 };

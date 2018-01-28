@@ -1,13 +1,25 @@
 {
   "door": {
     "ghostliness": 0,
-    "links": "kitchen, sprint plan"
+    "links": "kitchen, wall"
+  },
+  "wall": {
+    "ghostliness": 0,
+    "links": "door"
   },
   "kitchen": {
     "ghostliness": 10,
-    "links": "door"
+    "links": "door, toilets"
   },
-  "sprint plan": {
+  "toilets": {
+    "ghostliness": 2,
+    "links": "kitchen"
+  },
+  "desks": {
+    "ghostliness": 5,
+    "links": "sofa"
+  },
+  "sofa": {
     "ghostliness": 5,
     "links": "door"
   }
