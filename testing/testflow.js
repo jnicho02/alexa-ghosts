@@ -24,6 +24,9 @@ var appId = 'amzn1.ask.skill.4694b781-95b6-4dad-b5d8-003c9b6dd2a1';
 
 if (process.argv[2]) {
     MyDialog = './testing/dialogs/' + process.argv[2];
+    if (!MyDialog.endsWith(".txt")){
+      MyDialog = MyDialog + ".txt";
+    }
 }
 
 console.log();

@@ -1,0 +1,3 @@
+LaunchRequest
+WhereAreYouIntent place_or_thing=Kitchen
+AMAZON.StopIntent
