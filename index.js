@@ -111,7 +111,7 @@ const locateMode = Alexa.CreateStateHandler("LOCATE", {
           var links = currentRoom['links'].split(",");
           speechOutput = `${speechOutput}.
             I am not detecting much spirit activity.
-            Try moving toward the ${links[random(links.length)]}.
+            Try moving toward the ${oneOfThe(links)}.
             Tell me when we are there.`;
           reprompt = `Where exactly are we?`;
         } else if (currentRoom['ghostliness'] < 7) {
@@ -199,24 +199,36 @@ const findMode = Alexa.CreateStateHandler("FIND", {
     }
     var speechOutput = ``;
     var reprompt = ``;
-    var diceRoll = random(5);
+    var diceRoll = random(3); // destined to fail first time
     while (this.event.session.attributes['diceRolls'].includes(diceRoll)) {
-        diceRoll = random(5);
+        diceRoll = random(6);
     };
     console.log(`rolled a ${diceRoll}`);
     this.event.session.attributes['diceRolls'].push(diceRoll);
+    var direction = oneOfThe([
+      "to the left a bit",
+      "to the right a bit",
+      "up in the air",
+      "down low",
+      "left and right",
+      "in a circle",
+      "randomly",
+      "in a square pattern",
+      "in the air",
+    ]);
+    console.log(`move ${direction}`);
     switch (diceRoll) {
       case 0:
         speechOutput = `I think I detected something. Move me to the left and ask again`;
-        reprompt = `Move me to the left a bit and say, is anybody there?`;
+        reprompt = `Move me ${direction} and say, is anybody there?`;
         break;
       case 1:
         speechOutput = `The spirits are there. Try again`;
-        reprompt = `Say, is anybody there?`;
+        reprompt = `Move me ${direction} and say, is anybody there?`;
         break;
       case 2:
         speechOutput = `Some trace activity. Try again`;
-        reprompt = `Say, is anybody there?`;
+        reprompt = `Move me ${direction} and say, is anybody there?`;
         break;
       case 3:
         speechOutput = `${mp3("creepy")}
@@ -234,7 +246,7 @@ const findMode = Alexa.CreateStateHandler("FIND", {
         break;
       case 5:
         speechOutput = `${mp3("aaagh1")}
-          Shit. Did you hear that? What the fuck!
+          Shit. Did you hear that?
           Let's try to speak with it.`;
         reprompt = `Let's try to speak with it.`;
         this.event.session.attributes['diceRolls'] = [];
@@ -353,6 +365,10 @@ String.prototype.replaceAll = function(target, replacement) {
 function random(max) {
   return Math.floor(Math.random() * Math.floor(max));
 };
+
+function oneOfThe(arrayOfThings) {
+  return arrayOfThings[random(arrayOfThings.length)];
+}
 
 function getSlotValues(filledSlots) {
   //given event.request.intent.slots, a slots values object so you have
