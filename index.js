@@ -20,7 +20,9 @@ const the_skiff = {
 module.exports.handler = (event, context, callback) => {
   const alexa = Alexa.handler(event, context);
   alexa.appId = process.env.APP_ID;
-  alexa.dynamoDBTableName = "alexa-ghost";
+  if (process.env.USE_DYNAMO_DB) {
+    alexa.dynamoDBTableName = "alexa-ghost";
+  }
   alexa.registerHandlers(handlers);
   alexa.execute();
 };
