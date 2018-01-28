@@ -3,6 +3,12 @@
 // node testflow
 // node testflow staterequest.txt
 
+// Notice that slot values with spaces need to be encoded.
+// Just insert %20 to replace any white spaces, such as in usstate=New%20York
+
+// You can prompt the user to confirm, or type in, a slot value by adding
+// a leading ? to your Intent
+
 // Toggle on or off various debugging outputs
 const options = {
   speechOutput: true,
