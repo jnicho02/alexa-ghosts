@@ -13,6 +13,10 @@
   },
   "toilets": {
     "ghostliness": 2,
+    "links": "kitchen, stairs"
+  },
+  "stairs": {
+    "ghostliness": 2,
     "links": "kitchen"
   },
   "desks": {
@@ -21,6 +25,6 @@
   },
   "sofa": {
     "ghostliness": 5,
-    "links": "door"
+    "links": "kitchen"
   }
 }

@@ -322,11 +322,11 @@ const speakMode = Alexa.CreateStateHandler("SPEAK", {
     if (this.event.session.attributes['ghost'] === undefined) {
       speechOutput = `Oh spirit, are you willing to speak?
         Spirit, please talk, we beseach thee.
-        Shall I ask it's name?`;
+        Shall I ask for its name?`;
     } else if (!this.event.session.attributes['ghostname']) {
       speechOutput = `Oh spirit, what is your name?
         Spirit, please talk, we beseech thee.
-        ${mp3("my-name-is")}
+        ${mp3("pause")}${mp3("pause")}${mp3("my-name-is")}
         . Well, that is slightly scary.
         Shall I ask it the next question?
         `;
@@ -334,19 +334,31 @@ const speakMode = Alexa.CreateStateHandler("SPEAK", {
     } else if (!this.event.session.attributes['ghosthappy']) {
       speechOutput = `Oh spirit, are you happy?
         Spirit, please talk, we beseech thee.
-        ${mp3("are-you-happy")}
+        ${mp3("pause")}${mp3("are-you-happy")}
         . Shall I ask it the next question?
         `;
       this.event.session.attributes['ghosthappy'] = true;
     } else if (!this.event.session.attributes['ghostwhere']) {
       speechOutput = `Oh spirit, where are you?
         Spirit, please tell us.
-        ${mp3("where-are-you")}
+        ${mp3("pause")}${mp3("where-are-you")}
         I am getting quite scared now.
         I think I will end this here.
-        Thank you for working with me.`;
-      this.event.session.attributes['ghostwhere'] = true;
-      this.handler.state = "LOCATE";
+        Thank you for working with me.
+        Goodbye.`;
+      this.event.session.attributes['location'] = undefined;
+      this.event.session.attributes['ghostname'] = undefined;
+      this.event.session.attributes['ghosthappy'] = undefined;
+      this.event.session.attributes['ghostwhere'] = undefined;
+      this.handler.state = undefined;
+      var reprompt = null;
+      var cardTitle = `Oh spirit...`;
+      var cardContent = speechOutput;
+      var imageObj = undefined;
+      log('YesIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
+      this.response.speak(speechOutput)
+        .cardRenderer(cardTitle, cardContent, imageObj);
+      this.emit(':responseReady');
     }
     this.event.session.attributes['ghost'] = 0;
     var reprompt = `Shall I continue.`;
@@ -360,6 +372,10 @@ const speakMode = Alexa.CreateStateHandler("SPEAK", {
     this.emit(':responseReady');
   },
   'AMAZON.NoIntent': function() {
+    this.event.session.attributes['location'] = undefined;
+    this.event.session.attributes['ghostname'] = undefined;
+    this.event.session.attributes['ghosthappy'] = undefined;
+    this.event.session.attributes['ghostwhere'] = undefined;
     this.handler.state = "LOCATE";
   },
   'AMAZON.CancelIntent': function() {
