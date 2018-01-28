@@ -9,7 +9,7 @@ module.exports.handler = (event, context, callback) => {
   if (process.env.USE_DYNAMO_DB) {
     alexa.dynamoDBTableName = "alexa-ghost";
   }
-  alexa.registerHandlers(lobbyMode, locateMode, findMode);
+  alexa.registerHandlers(lobbyMode, locateMode, findMode, speakMode);
   alexa.execute();
 };
 
@@ -116,13 +116,13 @@ const locateMode = Alexa.CreateStateHandler("LOCATE", {
           reprompt = `Where exactly are we?`;
         } else if (currentRoom['ghostliness'] < 7) {
           speechOutput = `${speechOutput}.
-            I am not detecting some spirit activity.
+            I am detecting spirit activity.
             Try asking if anybody is there, or move toward the ${currentRoom['links']['one']}.
-            If we move then tell me where we are.`;
+            If we move then say lets move.`;
           this.handler.state = "FIND";
         } else if (currentRoom['ghostliness'] <= 10) {
           speechOutput = `${speechOutput}.
-            There is very strong spirit activity.
+            There is very strong spirit activity here.
             Try asking if anybody is there.`;
           this.handler.state = "FIND";
         }
@@ -141,9 +141,9 @@ const locateMode = Alexa.CreateStateHandler("LOCATE", {
     this.emit(':responseReady');
   },
   'AMAZON.HelpIntent': function() {
-    var speechOutput = `This is the Ghost Story.`;
-    var reprompt = `Say hello, to hear me speak.`;
-    speechOutput = `${speechOutput} ${reprompt}`;
+    var speechOutput = `I cannot see and need to know where we are.
+      Where are we?`;
+    var reprompt = `Where are we?`;
     var cardTitle = `Help`;
     var cardContent = speechOutput;
     var imageObj = undefined;
@@ -160,8 +160,8 @@ const locateMode = Alexa.CreateStateHandler("LOCATE", {
     this.emit('CompletelyExit');
   },
   'CompletelyExit': function() {
-    this.event.session.attributes['location'] = undefined;
-    var speechOutput = `Goodbye.`;
+//    this.event.session.attributes['location'] = undefined;
+    var speechOutput = `Goodbye. We will restart where we left off.`;
     var reprompt = null;
     var cardTitle = `Exit`;
     var cardContent = speechOutput;
@@ -172,8 +172,7 @@ const locateMode = Alexa.CreateStateHandler("LOCATE", {
     this.emit(':responseReady');
   },
   'Unhandled': function() {
-    // handle any intent in interaction model with no handler code
-    var speechOutput = `This is the Ghost Story. `;
+    var speechOutput = `I did not quite get that. `;
     var reprompt = `I did not understand.`;
     speechOutput = `${speechOutput} ${reprompt}`;
     var cardTitle = `Unhandled`;
@@ -195,29 +194,53 @@ const locateMode = Alexa.CreateStateHandler("LOCATE", {
 //  IS ANYBODY THERE?
 const findMode = Alexa.CreateStateHandler("FIND", {
   'AnybodyThereIntent': function() {
+    if (this.event.session.attributes['diceRolls'] === undefined){
+      this.event.session.attributes['diceRolls'] = [];
+    }
     var speechOutput = ``;
-    switch (random(5)) {
+    var reprompt = ``;
+    var diceRoll = random(5);
+    while (this.event.session.attributes['diceRolls'].includes(diceRoll)) {
+        diceRoll = random(5);
+    };
+    console.log(`rolled a ${diceRoll}`);
+    this.event.session.attributes['diceRolls'].push(diceRoll);
+    switch (diceRoll) {
+      case 0:
+        speechOutput = `I think I detected something. Move me to the left and ask again`;
+        reprompt = `Move me to the left a bit and say, is anybody there?`;
+        break;
       case 1:
         speechOutput = `The spirits are there. Try again`;
+        reprompt = `Say, is anybody there?`;
         break;
       case 2:
-        speechOutput = `I am not sure. Try again`;
+        speechOutput = `Some trace activity. Try again`;
+        reprompt = `Say, is anybody there?`;
         break;
       case 3:
-        speechOutput = `${mp3("creepy")}`;
+        speechOutput = `${mp3("creepy")}
+          Did you hear that?
+          Let's try to speak with it.`;
+        reprompt = `Let's try to speak with it.`;
+        this.event.session.attributes['diceRolls'] = [];
         this.handler.state = "SPEAK";
         break;
       case 4:
-        speechOutput = `${mp3("i see dead people")}`;
-        this.handler.state = "SPEAK";
+        speechOutput = `${mp3("i see dead people")}
+          Did you hear that?
+          Move me down toward the floor and try again.`;
+        reprompt = `Move me down toward the floor and try again.`;
         break;
       case 5:
-        speechOutput = `${mp3("creepy")}`;
+        speechOutput = `${mp3("aaagh1")}
+          Shit. Did you hear that? What the fuck!
+          Let's try to speak with it.`;
+        reprompt = `Let's try to speak with it.`;
+        this.event.session.attributes['diceRolls'] = [];
         this.handler.state = "SPEAK";
         break;
     }
-    var reprompt = ``;
-    speechOutput = `${speechOutput} ${reprompt}`;
     var cardTitle = `Is anybody there?`;
     var cardContent = speechOutput;
     var imageObj = undefined;
@@ -247,7 +270,7 @@ const findMode = Alexa.CreateStateHandler("FIND", {
     this.handler.state = "LOCATE";
   },
   'Unhandled': function() {
-    var speechOutput = `This is the Ghost Story. `;
+    var speechOutput = `This is the Ghost Hunt. `;
     var reprompt = `I did not understand.`;
     speechOutput = `${speechOutput} ${reprompt}`;
     var cardTitle = `Unhandled`;
@@ -264,6 +287,48 @@ const findMode = Alexa.CreateStateHandler("FIND", {
     console.log(`Session ended: ${this.event.request.reason}`);
   },
 });
+
+
+//  LET'S SPEAK
+const speakMode = Alexa.CreateStateHandler("SPEAK", {
+  'AMAZON.HelpIntent': function() {
+    var speechOutput = `We are trying to see if the spirits are willing to speak.`;
+    var reprompt = `Say, is anybody there.`;
+    speechOutput = `${speechOutput} ${reprompt}`;
+    var cardTitle = `Help`;
+    var cardContent = speechOutput;
+    var imageObj = undefined;
+    log('HelpIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
+    this.response.speak(speechOutput)
+      .listen(reprompt)
+      .cardRenderer(cardTitle, cardContent, imageObj);
+    this.emit(':responseReady');
+  },
+  'AMAZON.CancelIntent': function() {
+    this.handler.state = "LOCATE";
+  },
+  'AMAZON.StopIntent': function() {
+    this.handler.state = "LOCATE";
+  },
+  'Unhandled': function() {
+    var speechOutput = `Speaking to a ghost. `;
+    var reprompt = `I did not understand.`;
+    speechOutput = `${speechOutput} ${reprompt}`;
+    var cardTitle = `Unhandled`;
+    var cardContent = speechOutput;
+    var imageObj = undefined;
+    log('Unhandled', speechOutput, reprompt, cardTitle, cardContent, imageObj);
+    this.response.speak(speechOutput)
+      .listen(reprompt)
+      .cardRenderer(cardTitle, cardContent, imageObj);
+    this.emit(':responseReady');
+  },
+  'SessionEndedRequest': function() {
+    // "exit", timeout or error. Cannot send back a response
+    console.log(`Session ended: ${this.event.request.reason}`);
+  },
+});
+
 
 function log(intent, speechOutput, reprompt, cardTitle, cardContent, imageObj) {
   console.log(`${intent}: ${JSON.stringify({

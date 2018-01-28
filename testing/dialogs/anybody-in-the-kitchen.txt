@@ -1,4 +1,8 @@
 LaunchRequest
 WhereAreYouIntent place_or_thing=kitchen
 AnybodyThereIntent
+AnybodyThereIntent
+AnybodyThereIntent
+AnybodyThereIntent
+AnybodyThereIntent
 AMAZON.StopIntent
