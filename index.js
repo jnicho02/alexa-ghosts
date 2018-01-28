@@ -22,7 +22,7 @@ const lobbyMode = {
         `;
     } else {
       speechOutput = `Welcome to ghost hunt.
-      I am a psychic medium device capable of tranmission to and from the spirit world.
+      I am a psychic medium device capable of transmission to and from the spirit world.
       Move me around the location and I will detect and hopefully talk to ghosts.
       I am not normally mobile and cannot see.
       You will have to be my legs and eyes.
@@ -227,14 +227,14 @@ const findMode = Alexa.CreateStateHandler("FIND", {
         reprompt = `Move me ${direction} and say, is anybody there?`;
         break;
       case 2:
-        speechOutput = `Some trace activity. Try again`;
+        speechOutput = `There is some trace activity. Try again`;
         reprompt = `Move me ${direction} and say, is anybody there?`;
         break;
       case 3:
         speechOutput = `${mp3("creepy")}
           Did you hear that?
-          Let's try to speak with it.`;
-        reprompt = `Let's try to speak with it.`;
+          Shall I try to speak with it.`;
+        reprompt = `Shall I try to speak with it.`;
         this.event.session.attributes['diceRolls'] = [];
         this.handler.state = "SPEAK";
         break;
@@ -322,11 +322,29 @@ const speakMode = Alexa.CreateStateHandler("SPEAK", {
       speechOutput = `Oh spirit, are you willing to speak?
         Spirit, please talk, we beseach thee.`;
     }
-    if (this.event.session.attributes['ghost'] !== undefined) {
+    if (this.event.session.attributes['ghost'] !== undefined
+      && !this.event.session.attributes['ghostname']) {
       speechOutput = `Oh spirit, what is your name?
         Spirit, please talk, we beseach thee.
-        ${mp3("cant-hear")}
+        ${mp3("my-name-is")}
         `;
+      this.event.session.attributes['ghostname'] = 'Zuul';
+    }
+    if (this.event.session.attributes['ghost'] !== undefined
+      && !this.event.session.attributes['ghosthappy']) {
+      speechOutput = `Oh spirit, are you happy?
+        Spirit, please talk, we beseach thee.
+        ${mp3("are-you-happy")}
+        `;
+      this.event.session.attributes['ghosthappy'] = true;
+    }
+    if (this.event.session.attributes['ghost'] !== undefined
+      && !this.event.session.attributes['ghostwhere']) {
+      speechOutput = `Oh spirit, are you happy?
+        Spirit, please talk, we beseach thee.
+        ${mp3("are-you-happy")}
+        `;
+      this.event.session.attributes['ghostwhere'] = true;
     }
     this.event.session.attributes['ghost'] = 0;
     var reprompt = `Shall I continue.`;
