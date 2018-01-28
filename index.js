@@ -282,7 +282,7 @@ const findMode = Alexa.CreateStateHandler("FIND", {
     this.handler.state = "LOCATE";
   },
   'Unhandled': function() {
-    var speechOutput = `This is the Ghost Hunt. `;
+    var speechOutput = `This is the Ghost Hunt.`;
     var reprompt = `I did not understand.`;
     speechOutput = `${speechOutput} ${reprompt}`;
     var cardTitle = `Unhandled`;
@@ -305,7 +305,7 @@ const findMode = Alexa.CreateStateHandler("FIND", {
 const speakMode = Alexa.CreateStateHandler("SPEAK", {
   'AMAZON.HelpIntent': function() {
     var speechOutput = `We are trying to see if the spirits are willing to speak.`;
-    var reprompt = `Say, is anybody there.`;
+    var reprompt = `Shall I continue.`;
     speechOutput = `${speechOutput} ${reprompt}`;
     var cardTitle = `Help`;
     var cardContent = speechOutput;
@@ -316,6 +316,33 @@ const speakMode = Alexa.CreateStateHandler("SPEAK", {
       .cardRenderer(cardTitle, cardContent, imageObj);
     this.emit(':responseReady');
   },
+  'AMAZON.YesIntent': function() {
+    var speechOutput = ``;
+    if (this.event.session.attributes['ghost'] === undefined) {
+      speechOutput = `Oh spirit, are you willing to speak?
+        Spirit, please talk, we beseach thee.`;
+    }
+    if (this.event.session.attributes['ghost'] !== undefined) {
+      speechOutput = `Oh spirit, what is your name?
+        Spirit, please talk, we beseach thee.
+        ${mp3("cant-hear")}
+        `;
+    }
+    this.event.session.attributes['ghost'] = 0;
+    var reprompt = `Shall I continue.`;
+    speechOutput = `${speechOutput} ${reprompt}`;
+    var cardTitle = `Oh spirit...`;
+    var cardContent = speechOutput;
+    var imageObj = undefined;
+    log('YesIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
+    this.response.speak(speechOutput)
+      .listen(reprompt)
+      .cardRenderer(cardTitle, cardContent, imageObj);
+    this.emit(':responseReady');
+  },
+  'AMAZON.NoIntent': function() {
+    this.handler.state = "LOCATE";
+  },
   'AMAZON.CancelIntent': function() {
     this.handler.state = "LOCATE";
   },
@@ -323,9 +350,11 @@ const speakMode = Alexa.CreateStateHandler("SPEAK", {
     this.handler.state = "LOCATE";
   },
   'Unhandled': function() {
-    var speechOutput = `Speaking to a ghost. `;
-    var reprompt = `I did not understand.`;
-    speechOutput = `${speechOutput} ${reprompt}`;
+    var speechOutput = `
+      We are transmitting to a spirit.
+      Shall I try to speak to it?
+    `;
+    var reprompt = `Shall I try to speak to it?`;
     var cardTitle = `Unhandled`;
     var cardContent = speechOutput;
     var imageObj = undefined;

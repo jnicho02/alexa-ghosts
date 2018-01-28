@@ -10,6 +10,9 @@
         "name": "AMAZON.StopIntent"
       },
       {
+        "name": "AMAZON.YesIntent"
+      },
+      {
         "name": "AnybodyThereIntent",
         "samples": [
           "is anybody there",
