@@ -30,13 +30,16 @@ const lobbyMode = {
     }
     var reprompt = `Where are we right now?`;
     speechOutput = `${speechOutput} ${reprompt}`;
-    var cardTitle = `Launch`;
-    var cardContent = speechOutput;
+    var cardTitle = `Welcome to ghost hunt.`;
+    var cardContent = `I am a psychic medium device.
+      I am not normally mobile and cannot see.
+      You will have to be my legs and eyes.
+    `;
     var imageObj = undefined;
     log('LaunchRequest', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.handler.state = "LOCATE";
     this.emit(':responseReady');
   },
@@ -44,13 +47,13 @@ const lobbyMode = {
     var speechOutput = `This is the Ghost Hunt.`;
     var reprompt = `I cannot see. Where are we right now?`;
     speechOutput = `${speechOutput} ${reprompt}`;
-    var cardTitle = `Help`;
-    var cardContent = speechOutput;
+    var cardTitle = `This is the Ghost Hunt`;
+    var cardContent = reprompt;
     var imageObj = undefined;
     log('HelpIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.emit(':responseReady');
   },
   'AMAZON.CancelIntent': function() {
@@ -68,7 +71,7 @@ const lobbyMode = {
     var imageObj = undefined;
     log('CompletelyExit', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.emit(':responseReady');
   },
   'Unhandled': function() {
@@ -81,7 +84,7 @@ const lobbyMode = {
     log('Unhandled', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.emit(':responseReady');
   },
   'SessionEndedRequest': function() {
@@ -137,7 +140,7 @@ const locateMode = Alexa.CreateStateHandler("LOCATE", {
     log('WhereAreYouIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.emit(':responseReady');
   },
   'AMAZON.HelpIntent': function() {
@@ -150,7 +153,7 @@ const locateMode = Alexa.CreateStateHandler("LOCATE", {
     log('HelpIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.emit(':responseReady');
   },
   'AMAZON.CancelIntent': function() {
@@ -168,7 +171,7 @@ const locateMode = Alexa.CreateStateHandler("LOCATE", {
     var imageObj = undefined;
     log('CompletelyExit', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.emit(':responseReady');
   },
   'Unhandled': function() {
@@ -181,7 +184,7 @@ const locateMode = Alexa.CreateStateHandler("LOCATE", {
     log('Unhandled', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.emit(':responseReady');
   },
   'SessionEndedRequest': function() {
@@ -240,14 +243,14 @@ const findMode = Alexa.CreateStateHandler("FIND", {
         break;
       case 4:
         speechOutput = `${mp3("i see dead people")}
-          Did you hear that?
+          ..Did you hear that?
           Move me ${direction} and try again.`;
         reprompt = `Move me ${direction} and try again.`;
         break;
       case 5:
         speechOutput = `${mp3("aaagh1")}
           Shit.
-          Did you hear that?
+          Did you hear that?.
           Should I try to speak with it.`;
         reprompt = `Should I try to speak with it.`;
         this.event.session.attributes['diceRolls'] = [];
@@ -260,7 +263,7 @@ const findMode = Alexa.CreateStateHandler("FIND", {
     log('AnybodyThereIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.emit(':responseReady');
   },
   'AMAZON.HelpIntent': function() {
@@ -273,7 +276,7 @@ const findMode = Alexa.CreateStateHandler("FIND", {
     log('HelpIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.emit(':responseReady');
   },
   'AMAZON.CancelIntent': function() {
@@ -292,7 +295,7 @@ const findMode = Alexa.CreateStateHandler("FIND", {
     log('Unhandled', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.emit(':responseReady');
   },
   'SessionEndedRequest': function() {
@@ -314,10 +317,11 @@ const speakMode = Alexa.CreateStateHandler("SPEAK", {
     log('HelpIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.emit(':responseReady');
   },
   'AMAZON.YesIntent': function() {
+    var continueConversation = true;
     var speechOutput = ``;
     if (this.event.session.attributes['ghost'] === undefined) {
       speechOutput = `Oh spirit, are you willing to speak?
@@ -355,10 +359,7 @@ const speakMode = Alexa.CreateStateHandler("SPEAK", {
       var cardTitle = `Oh spirit...`;
       var cardContent = speechOutput;
       var imageObj = undefined;
-      log('YesIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
-      this.response.speak(speechOutput)
-        .cardRenderer(cardTitle, cardContent, imageObj);
-      this.emit(':responseReady');
+      continueConversation = false;
     }
     this.event.session.attributes['ghost'] = 0;
     var reprompt = `Shall I continue.`;
@@ -366,9 +367,14 @@ const speakMode = Alexa.CreateStateHandler("SPEAK", {
     var cardContent = speechOutput;
     var imageObj = undefined;
     log('YesIntent', speechOutput, reprompt, cardTitle, cardContent, imageObj);
-    this.response.speak(speechOutput)
-      .listen(reprompt)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+    if (continueConversation) {
+      this.response.speak(speechOutput)
+        .listen(reprompt)
+        .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
+    } else {
+      this.response.speak(speechOutput)
+        .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
+    }
     this.emit(':responseReady');
   },
   'AMAZON.NoIntent': function() {
@@ -396,7 +402,7 @@ const speakMode = Alexa.CreateStateHandler("SPEAK", {
     log('Unhandled', speechOutput, reprompt, cardTitle, cardContent, imageObj);
     this.response.speak(speechOutput)
       .listen(reprompt)
-      .cardRenderer(cardTitle, cardContent, imageObj);
+      .cardRenderer(cardTitle, cardContent.replaceAll(/<audio.*\/>/,''), imageObj);
     this.emit(':responseReady');
   },
   'SessionEndedRequest': function() {
